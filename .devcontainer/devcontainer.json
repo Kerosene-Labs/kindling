@@ -1,0 +1,59 @@
+{
+    "name": "Kindling",
+    "image": "mcr.microsoft.com/devcontainers/java:1-21-bookworm",
+    "features": {
+        "ghcr.io/devcontainers/features/java:1": {
+            "version": "none",
+            "installMaven": "false",
+            "installGradle": "true"
+        },
+        "ghcr.io/devcontainers/features/docker-in-docker": {}
+    },
+    "mounts": [
+        {
+            "source": "${localEnv:HOME}/.gitconfig",
+            "target": "/home/vscode/.gitconfig",
+            "type": "bind"
+        }
+    ],
+    // "postCreateCommand": "sudo mkdir /etc/kindling && sudo ln -s /workspaces/kindling/configuration.json /etc/atc/configuration.json",
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "vscjava.vscode-java-pack",
+                "vscjava.vscode-gradle",
+                "DavidAnson.vscode-markdownlint",
+                "ms-azuretools.vscode-docker",
+                "github.vscode-github-actions",
+                "GitHub.vscode-pull-request-github",
+                "redhat.vscode-yaml"
+            ],
+            "settings": {
+                "files.autoSave": "afterDelay",
+                "files.autoSaveDelay": 250,
+                "editor.formatOnSave": true,
+                "files.exclude": {
+                    "**/.git": true,
+                    "**/.svn": true,
+                    "**/.hg": true,
+                    "**/CVS": true,
+                    "**/.DS_Store": true,
+                    "**/Thumbs.db": true,
+                    ".github": false,
+                    ".gradle": true,
+                    ".devcontainer": true,
+                    ".vscode": true,
+                    "bin": true,
+                    "build": true,
+                    "gradle": true,
+                    "gradlew": true,
+                    "gradlew.bat": true
+                }
+            }
+        }
+    },
+    "forwardPorts": [
+        8443
+    ],
+    "postAttachCommand": "gradle"
+}
