@@ -4,8 +4,8 @@
     "features": {
         "ghcr.io/devcontainers/features/java:1": {
             "version": "none",
-            "installMaven": "false",
-            "installGradle": "true"
+            "installMaven": "true",
+            "installGradle": "false"
         },
         "ghcr.io/devcontainers/features/docker-in-docker": {}
     },
@@ -26,7 +26,9 @@
                 "ms-azuretools.vscode-docker",
                 "github.vscode-github-actions",
                 "GitHub.vscode-pull-request-github",
-                "redhat.vscode-yaml"
+                "redhat.vscode-yaml",
+                "vscjava.vscode-maven",
+                "redhat.vscode-xml"
             ],
             "settings": {
                 "files.autoSave": "afterDelay",
