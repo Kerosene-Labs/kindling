@@ -3,26 +3,28 @@ package io.kerosenelabs.kindling.handler;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-
-import io.kerosenelabs.kindling.constant.MimeType;
+import java.util.List;
 
 /**
- * A generic implementation of {@link RequestHandler}.
+ * A parser and data transfer object for a raw HTTP request.
  */
 public class HttpRequest {
     // whole request variables
     private final String httpRequest;
-    private final ArrayList<String> splitHttpRequest;
+    private final List<String> splitHttpRequest;
 
     // important values
-    private String endpoint;
+    private String resource;
     private HashMap<String, String> headers;
     private HashMap<String, String> cookies;
     private String body;
 
     public HttpRequest(String httpRequest) {
         this.httpRequest = httpRequest;
-        this.splitHttpRequest = getSplitHttpRequest(httpRequest);
+        splitHttpRequest = getSplitHttpRequest(httpRequest);
+        resource = parseResource();
+        headers = parseHeaders();
+
     }
 
     /**
@@ -32,21 +34,26 @@ public class HttpRequest {
      * @param httpRequest
      * @return
      */
-    private static ArrayList<String> getSplitHttpRequest(String httpRequest) {
-        return (ArrayList<String>) Arrays.asList(httpRequest.split("\r\n"));
+    private static List<String> getSplitHttpRequest(String httpRequest) {
+        return Arrays.asList(httpRequest.split("\r\n"));
     }
 
     /**
-     * Get the endpoint for this request. For example, {@code /endpoint}.
+     * Parse ther esource for this request. For example, {@code /resource}.
      * 
      * @return
      */
-    public String getEndpoint() {
+    private String parseResource() {
         String requestLine = splitHttpRequest.get(0);
         return requestLine.split(" ")[1];
     }
 
-    public HashMap<String, String> getHeaders() {
+    /**
+     * Par
+     * * @retur
+     */
+    private HashMap<String, String> parseHeaders() {
+        // separate out the request line and body separator
         ArrayList<String> headerLines = new ArrayList<>();
         for (int n = 0; n < splitHttpRequest.size(); n++) {
             // skip the request line
@@ -59,31 +66,10 @@ public class HttpRequest {
             }
             headerLines.add(splitHttpRequest.get(n));
         }
-        return headerLines;
-    }
 
-    public String getHeaderValue(String headerName) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getHeaderValue'");
-    }
-
-    public HashMap<String, String> getCookies() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getCookies'");
-    }
-
-    public String getCookieValue(String cookieName) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getCookieValue'");
-    }
-
-    public String getBody() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getRequestBody'");
-    }
-
-    public MimeType getAcceptType() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getAcceptType'");
+        // iterate over header lines, separate by :
+        HashMap<String, String> headers = new HashMap<>();
+        // for (n = 1; n < headerLines.)
+        return headers;
     }
 }
