@@ -1,7 +1,9 @@
 package io.kerosenelabs.kindling;
 
 import java.nio.file.Path;
+import java.util.HashMap;
 
+import io.kerosenelabs.kindling.constant.HttpMethod;
 import io.kerosenelabs.kindling.constant.HttpStatus;
 import io.kerosenelabs.kindling.exception.KindlingException;
 import io.kerosenelabs.kindling.handler.RequestHandler;
@@ -14,14 +16,19 @@ public class Main {
         // test request handler
         server.installRequestHandler(new RequestHandler() {
             @Override
-            public boolean acceptResource(String resource) throws KindlingException {
-                return true;
+            public boolean accepts(HttpMethod httpMethod, String resource) throws KindlingException {
+                return httpMethod.equals(HttpMethod.GET) && resource.equals("/");
             }
 
             @Override
             public HttpResponse handle(HttpRequest httpRequest) throws KindlingException {
                 return new HttpResponse.Builder()
                         .status(HttpStatus.OK)
+                        .headers(new HashMap<>() {
+                            {
+                                put("Content-Type", "text/html");
+                            }
+                        })
                         .content("<h1>Hello from Kindling!</h1>")
                         .build();
             }

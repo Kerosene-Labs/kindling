@@ -112,7 +112,7 @@ public class KindlingServer {
                 // iterate over request handlers, finding one that can take this request
                 HttpResponse response = null;
                 for (RequestHandler requestHandler : requestHandlers) {
-                    if (requestHandler.acceptResource(httpRequest.getResource())) {
+                    if (requestHandler.accepts(httpRequest.getHttpMethod(), httpRequest.getResource())) {
                         response = requestHandler.handle(httpRequest);
                     }
                 }
@@ -123,7 +123,7 @@ public class KindlingServer {
                 }
 
                 System.out.println(response.toString());
-                
+
                 // write our response
                 outputStream.write(response.toString().getBytes());
 

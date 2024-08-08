@@ -54,6 +54,10 @@ public class HttpRequest {
         return resource;
     }
 
+    public HttpMethod getHttpMethod() {
+        return httpMethod;
+    }
+
     /**
      * Get a valid re-creation of the HTTP message
      */
