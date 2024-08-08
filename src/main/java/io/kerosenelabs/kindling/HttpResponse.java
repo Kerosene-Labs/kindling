@@ -2,43 +2,58 @@ package io.kerosenelabs.kindling;
 
 import java.util.HashMap;
 
-import io.kerosenelabs.kindling.exception.KindlingException;
+import io.kerosenelabs.kindling.constant.HttpConstants;
+import io.kerosenelabs.kindling.constant.HttpStatus;
 
 public class HttpResponse {
-    private int statusCode;
+    private HttpStatus httpStatus;
     private HashMap<String, String> headers = new HashMap<>();
     private String content;
 
     HttpResponse(Builder builder) {
-        this.statusCode = builder.statusCode;
+        this.httpStatus = builder.httpStatus;
         this.headers = builder.headers;
         this.content = builder.content;
     }
 
+    public String toString() {
+        StringBuilder stringBuilder = new StringBuilder()
+                .append(String.format("HTTP1/1 %s %s\r\n", httpStatus.getNumber(), httpStatus.getDescription()));
+
+        // iterate over each header, add it
+        for (HashMap.Entry<String, String> entry : headers.entrySet()) {
+            stringBuilder.append(String.format("%s: %s\r\n", entry.getKey(), entry.getValue()));
+        }
+
+        // add the separator
+        stringBuilder.append(HttpConstants.SEPARATOR);
+
+        // add the content
+        stringBuilder.append(content);
+
+        return stringBuilder.toString();
+    }
+
     public static class Builder {
-        private int statusCode;
+        private HttpStatus httpStatus;
         private HashMap<String, String> headers = new HashMap<>();
         private String content;
 
-        public Builder setStatusCode(int statusCode) {
-            this.statusCode = statusCode;
+        public Builder status(HttpStatus httpStatus) {
+            this.httpStatus = httpStatus;
             return this;
         }
 
-        public Builder setHeaders(HashMap<String, String> headers) {
+        public Builder headers(HashMap<String, String> headers) {
             this.headers = headers;
             return this;
         }
 
-        public Builder setContent(String content) {
+        public Builder content(String content) {
             return this;
         }
 
-        public HttpResponse build() throws KindlingException {
-            // evaluate nulls
-            if (headers == null) {
-                throw new KindlingException("Headers in response must not be null");
-            }
+        public HttpResponse build() {
             return new HttpResponse(this);
         }
     }

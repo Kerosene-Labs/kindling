@@ -3,16 +3,23 @@ package io.kerosenelabs.kindling.handler;
 import java.net.http.HttpRequest;
 
 import io.kerosenelabs.kindling.HttpResponse;
+import io.kerosenelabs.kindling.constant.HttpStatus;
 import io.kerosenelabs.kindling.exception.KindlingException;
 
-public class RequestHandler {
-    private String resource;
+public abstract class RequestHandler {
+    public abstract HttpResponse handle(HttpRequest httpRequest) throws KindlingException;
 
-    public RequestHandler(String resource) {
-        this.resource = resource;
-    }
-
-    public HttpResponse handle(HttpRequest httpRequest) throws KindlingException {
-        return new HttpResponse.Builder().setStatusCode(200).build();
+    /**
+     * Called from {@link io.kerosenelabs.kindling.Server} if an error occurs during
+     * {@link RequestHandler#handle(HttpRequest)}
+     * 
+     * @return
+     * @throws KindlingException
+     */
+    public HttpResponse doError() {
+        return new HttpResponse.Builder()
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .content("Internal Server Error")
+                .build();
     }
 }

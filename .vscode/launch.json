@@ -8,7 +8,7 @@
             "type": "java",
             "name": "Main",
             "request": "launch",
-            "mainClass": "io.kerosenelabs.Main",
+            "mainClass": "io.kerosenelabs.kindling.Main",
             "projectName": "kindling"
         }
     ]
