@@ -15,11 +15,17 @@ public class Main {
 
         // test request handler
         server.installRequestHandler(new RequestHandler() {
+            /**
+             * Tell the server what type of request this handler can work with
+             */
             @Override
             public boolean accepts(HttpMethod httpMethod, String resource) throws KindlingException {
                 return httpMethod.equals(HttpMethod.GET) && resource.equals("/");
             }
 
+            /**
+             * Do your business logic here
+             */
             @Override
             public HttpResponse handle(HttpRequest httpRequest) throws KindlingException {
                 return new HttpResponse.Builder()
