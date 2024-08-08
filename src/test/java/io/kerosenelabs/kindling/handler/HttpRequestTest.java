@@ -1,10 +1,6 @@
 package io.kerosenelabs.kindling.handler;
 
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
-import io.kerosenelabs.kindling.HttpRequest;
 
 public class HttpRequestTest {
     private String rawGetRequest;
@@ -21,10 +17,5 @@ public class HttpRequestTest {
                 .append("Upgrade-Insecure-Requests: 1\r\n")
                 .append("\r\n")
                 .toString();
-    }
-
-    @Test
-    public void shouldParseHttpRequest_WhenGivenValidGetRequest() {
-        HttpRequest httpRequest = new HttpRequest(rawGetRequest);
     }
 }

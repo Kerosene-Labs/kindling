@@ -2,3 +2,4 @@ target/
 maven
 .m2/
 .maven/
+*.p12

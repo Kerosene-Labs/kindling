@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -53,7 +54,11 @@ public class KindlingServer {
      * @return
      * @throws KindlingException
      */
-    public void serve(int port) throws KindlingException {
+    public void serve(int port, Path keystorePath, String keyStorePassword) throws KindlingException {
+        // set the system preferences for the keystore path and password
+        System.setProperty("javax.net.ssl.keyStore", keystorePath.toAbsolutePath().toString());
+        System.setProperty("javax.net.ssl.keyStorePassword", keyStorePassword);
+
         // create an atomic reference to store any critical exceptions that occur within
         // the thread
         AtomicReference<Throwable> threadException = new AtomicReference<>();
@@ -63,7 +68,7 @@ public class KindlingServer {
             try (SSLServerSocket socket = (SSLServerSocket) socketFactory.createServerSocket(port)) {
                 while (true) {
                     SSLSocket sslSocket = (SSLSocket) socket.accept();
-                    throw new RuntimeException("Got request");
+                    dispatchWorker(sslSocket);
                 }
             } catch (Exception e) {
                 threadException.set(e);
@@ -97,8 +102,11 @@ public class KindlingServer {
                     InputStreamReader inputStreamReder = new InputStreamReader(inputStream);
                     BufferedReader bufferedReader = new BufferedReader(inputStreamReder);
                     OutputStream OutputStream = sslSocket.getOutputStream();) {
-                        
-            } catch (IOException e) {
+
+                // parse our http request
+                HttpRequest httpRequest = new HttpRequest(bufferedReader);
+                System.out.println(httpRequest.toString());
+            } catch (IOException | KindlingException e) {
                 throw new RuntimeException(e);
             }
         });

@@ -1,6 +1,7 @@
 package io.kerosenelabs.kindling;
 
 import java.net.http.HttpRequest;
+import java.nio.file.Path;
 
 import io.kerosenelabs.kindling.constant.HttpStatus;
 import io.kerosenelabs.kindling.exception.KindlingException;
@@ -20,6 +21,6 @@ public class Main {
         });
 
         // serve our server
-        server.serve(8443);
+        server.serve(8443, Path.of("mykeystore.p12"), "password");
     }
 }

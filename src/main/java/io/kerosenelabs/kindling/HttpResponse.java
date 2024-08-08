@@ -2,7 +2,6 @@ package io.kerosenelabs.kindling;
 
 import java.util.HashMap;
 
-import io.kerosenelabs.kindling.constant.HttpConstants;
 import io.kerosenelabs.kindling.constant.HttpStatus;
 
 public class HttpResponse {
@@ -26,7 +25,7 @@ public class HttpResponse {
         }
 
         // add the separator
-        stringBuilder.append(HttpConstants.SEPARATOR);
+        stringBuilder.append("\r\n");
 
         // add the content
         stringBuilder.append(content);
