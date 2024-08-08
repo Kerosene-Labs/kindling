@@ -3,7 +3,7 @@ package io.kerosenelabs.kindling.constant;
 public enum HttpStatus {
     OK(200, "OK"),
     CREATED(201, "Created"),
-    NO_RESPONSE(204, "No Response"),
+    NO_CONTENT(204, "No Content"),
     BAD_REQUEST(400, "Bad Request"),
     NOT_FOUND(404, "Not Found"),
     INTERNAL_SERVER_ERROR(500, "Internal Server Error");

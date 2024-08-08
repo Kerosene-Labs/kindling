@@ -13,6 +13,11 @@ public class HttpResponse {
         this.httpStatus = builder.httpStatus;
         this.headers = builder.headers;
         this.content = builder.content;
+
+        // implicitly calculate Content-Length
+        if (content != null) {
+            headers.put("Content-Length", Integer.toString(content.getBytes().length));
+        }
     }
 
     public String toString() {
