@@ -1,4 +1,4 @@
-package io.kerosenelabs.kindling.handler;
+package io.kerosenelabs.kindling;
 
 import java.util.ArrayList;
 import java.util.Arrays;

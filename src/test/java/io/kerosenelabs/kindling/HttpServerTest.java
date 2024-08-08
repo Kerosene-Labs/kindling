@@ -1,4 +1,4 @@
-package io.kerosenelabs;
+package io.kerosenelabs.kindling;
 
 public class HttpServerTest {
     
