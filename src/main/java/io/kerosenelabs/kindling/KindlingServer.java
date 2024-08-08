@@ -122,8 +122,6 @@ public class KindlingServer {
                     response = new HttpResponse.Builder().status(HttpStatus.NOT_FOUND).content("Not Found").build();
                 }
 
-                System.out.println(response.toString());
-
                 // write our response
                 outputStream.write(response.toString().getBytes());
 
