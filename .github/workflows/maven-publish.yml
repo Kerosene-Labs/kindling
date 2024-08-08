@@ -32,4 +32,4 @@ jobs:
       run: mvn deploy -s $GITHUB_WORKSPACE/settings.xml
       env:
         USERNAME: ${{ secrets.USERNAME }}
-        ACCESS_TOKEN: ${{ github.token }}
+        ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
