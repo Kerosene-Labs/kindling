@@ -50,6 +50,10 @@ public class HttpRequest {
         }
     }
 
+    public String getResource() {
+        return resource;
+    }
+
     /**
      * Get a valid re-creation of the HTTP message
      */

@@ -1,6 +1,5 @@
 package io.kerosenelabs.kindling;
 
-import java.net.http.HttpRequest;
 import java.nio.file.Path;
 
 import io.kerosenelabs.kindling.constant.HttpStatus;
@@ -13,10 +12,18 @@ public class Main {
         KindlingServer server = KindlingServer.getInstance();
 
         // test request handler
-        server.installRequestHandler("/", new RequestHandler() {
+        server.installRequestHandler(new RequestHandler() {
+            @Override
+            public boolean acceptResource(String resource) throws KindlingException {
+                return true;
+            }
+
             @Override
             public HttpResponse handle(HttpRequest httpRequest) throws KindlingException {
-                return new HttpResponse.Builder().status(HttpStatus.OK).build();
+                return new HttpResponse.Builder()
+                        .status(HttpStatus.OK)
+                        .content("<h1>Hello from Kindling!</h1>")
+                        .build();
             }
         });
 

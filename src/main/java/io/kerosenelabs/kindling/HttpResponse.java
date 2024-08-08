@@ -17,7 +17,7 @@ public class HttpResponse {
 
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder()
-                .append(String.format("HTTP1/1 %s %s\r\n", httpStatus.getNumber(), httpStatus.getDescription()));
+                .append(String.format("HTTP/1.1 %s %s\r\n", httpStatus.getNumber(), httpStatus.getDescription()));
 
         // iterate over each header, add it
         for (HashMap.Entry<String, String> entry : headers.entrySet()) {
@@ -28,7 +28,9 @@ public class HttpResponse {
         stringBuilder.append("\r\n");
 
         // add the content
-        stringBuilder.append(content);
+        if (content != null) {
+            stringBuilder.append(content);
+        }
 
         return stringBuilder.toString();
     }
@@ -49,6 +51,7 @@ public class HttpResponse {
         }
 
         public Builder content(String content) {
+            this.content = content;
             return this;
         }
 

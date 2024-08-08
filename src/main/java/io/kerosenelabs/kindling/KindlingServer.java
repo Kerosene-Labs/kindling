@@ -6,13 +6,16 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
 import javax.net.ssl.SSLServerSocket;
 import javax.net.ssl.SSLServerSocketFactory;
 import javax.net.ssl.SSLSocket;
 
+import io.kerosenelabs.kindling.constant.HttpStatus;
 import io.kerosenelabs.kindling.exception.KindlingException;
 import io.kerosenelabs.kindling.handler.RequestHandler;
 
@@ -21,7 +24,7 @@ import io.kerosenelabs.kindling.handler.RequestHandler;
  */
 public class KindlingServer {
     private static KindlingServer instance = null;
-    private HashMap<String, RequestHandler> requestHandlers = new HashMap<>();
+    private List<RequestHandler> requestHandlers = new ArrayList<>();
 
     private KindlingServer() {
     }
@@ -39,13 +42,13 @@ public class KindlingServer {
      * @param requestHandler
      * @throws KindlingException
      */
-    public void installRequestHandler(String resourceMapping, RequestHandler requestHandler) throws KindlingException {
-        for (String mapping : requestHandlers.keySet()) {
-            if (mapping.equals(resourceMapping)) {
-                throw new KindlingException("Programming error, duplicate resource mapping");
+    public void installRequestHandler(RequestHandler requestHandler) throws KindlingException {
+        for (RequestHandler handler : requestHandlers) {
+            if (handler.equals(requestHandler)) {
+                throw new KindlingException("Programming error, duplicate request handler");
             }
         }
-        requestHandlers.put(resourceMapping, requestHandler);
+        requestHandlers.add(requestHandler);
     }
 
     /**
@@ -101,11 +104,29 @@ public class KindlingServer {
                     InputStream inputStream = sslSocket.getInputStream();
                     InputStreamReader inputStreamReder = new InputStreamReader(inputStream);
                     BufferedReader bufferedReader = new BufferedReader(inputStreamReder);
-                    OutputStream OutputStream = sslSocket.getOutputStream();) {
+                    OutputStream outputStream = sslSocket.getOutputStream();) {
 
                 // parse our http request
                 HttpRequest httpRequest = new HttpRequest(bufferedReader);
-                System.out.println(httpRequest.toString());
+
+                // iterate over request handlers, finding one that can take this request
+                HttpResponse response = null;
+                for (RequestHandler requestHandler : requestHandlers) {
+                    if (requestHandler.acceptResource(httpRequest.getResource())) {
+                        response = requestHandler.handle(httpRequest);
+                    }
+                }
+
+                // if there were no request handlers
+                if (response == null) {
+                    response = new HttpResponse.Builder().status(HttpStatus.NOT_FOUND).content("Not Found").build();
+                }
+
+                System.out.println(response.toString());
+                
+                // write our response
+                outputStream.write(response.toString().getBytes());
+
             } catch (IOException | KindlingException e) {
                 throw new RuntimeException(e);
             }

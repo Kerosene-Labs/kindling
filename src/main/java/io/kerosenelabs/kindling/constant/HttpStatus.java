@@ -5,6 +5,7 @@ public enum HttpStatus {
     CREATED(201, "Created"),
     NO_RESPONSE(204, "No Response"),
     BAD_REQUEST(400, "Bad Request"),
+    NOT_FOUND(404, "Not Found"),
     INTERNAL_SERVER_ERROR(500, "Internal Server Error");
 
     private final int number;

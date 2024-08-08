@@ -1,13 +1,14 @@
 package io.kerosenelabs.kindling.handler;
 
-import java.net.http.HttpRequest;
-
+import io.kerosenelabs.kindling.HttpRequest;
 import io.kerosenelabs.kindling.HttpResponse;
 import io.kerosenelabs.kindling.constant.HttpStatus;
 import io.kerosenelabs.kindling.exception.KindlingException;
 
 public abstract class RequestHandler {
     public abstract HttpResponse handle(HttpRequest httpRequest) throws KindlingException;
+
+    public abstract boolean acceptResource(String resource) throws KindlingException;
 
     /**
      * Called from {@link io.kerosenelabs.kindling.Server} if an error occurs during
