@@ -44,4 +44,11 @@
       </plugin>
     </plugins>
   </build>
+  <distributionManagement>
+    <repository>
+      <id>github</id>
+      <name>GitHub Kerosene-Labs Apache Maven Packages</name>
+      <url>https://maven.pkg.github.com/Kerosene-Labs/kindling</url>
+    </repository>
+  </distributionManagement>
 </project>
