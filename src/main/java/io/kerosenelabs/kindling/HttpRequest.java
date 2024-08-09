@@ -58,6 +58,18 @@ public class HttpRequest {
         return httpMethod;
     }
 
+    public HashMap<String, String> getHeaders() {
+        return headers;
+    }
+
+    public String getProtocolVersion() {
+        return protocolVersion;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
     /**
      * Get a valid re-creation of the HTTP message
      */

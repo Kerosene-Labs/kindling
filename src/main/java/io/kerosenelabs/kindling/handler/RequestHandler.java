@@ -9,15 +9,14 @@ import io.kerosenelabs.kindling.exception.KindlingException;
 public abstract class RequestHandler {
     public abstract HttpResponse handle(HttpRequest httpRequest) throws KindlingException;
 
-    public abstract boolean accepts(HttpMethod httpMethod, String resource) throws KindlingException;
+    public abstract boolean accepts(HttpRequest httpRequest) throws KindlingException;
 
     /**
-     * Called from {@link io.kerosenelabs.kindling.Server} if an error occurs during
+     * Called from {@link io.kerosenelabs.kindling.KindlingServer} if an error occurs during
      * {@link RequestHandler#handle(HttpRequest)}
      * 
-     * @param The throwable that occurred
+     * @param t the Throwable that occurred
      * @return
-     * @throws KindlingException
      */
     public HttpResponse handleError(Throwable t) {
         return new HttpResponse.Builder()
