@@ -15,10 +15,11 @@ public abstract class RequestHandler {
      * Called from {@link io.kerosenelabs.kindling.Server} if an error occurs during
      * {@link RequestHandler#handle(HttpRequest)}
      * 
+     * @param The throwable that occurred
      * @return
      * @throws KindlingException
      */
-    public HttpResponse doError() {
+    public HttpResponse handleError(Throwable t) {
         return new HttpResponse.Builder()
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .content("Internal Server Error")

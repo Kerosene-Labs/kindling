@@ -32,10 +32,10 @@ public class Main {
                         .status(HttpStatus.OK)
                         .headers(new HashMap<>() {
                             {
-                                put("Content-Type", "text/html");
+                                put("Content-Type", "application/json");
                             }
                         })
-                        .content("<h1>Hello from Kindling!</h1>")
+                        .content("{\"key\": \"value\"}")
                         .build();
             }
         });
