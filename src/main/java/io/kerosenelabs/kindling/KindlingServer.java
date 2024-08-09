@@ -5,10 +5,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.lang.reflect.InvocationTargetException;
 import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.atomic.AtomicReference;
 
 import javax.net.ssl.SSLServerSocket;
@@ -25,6 +26,12 @@ import io.kerosenelabs.kindling.handler.RequestHandler;
 public class KindlingServer {
     private static KindlingServer instance = null;
     private List<RequestHandler> requestHandlers = new ArrayList<>();
+    private WorkerThreadNameGenerator workerThreadNameGenerator = new WorkerThreadNameGenerator() {
+        @Override
+        public String generate() {
+            return "req:" + UUID.randomUUID().toString();
+        }
+    };
 
     private KindlingServer() {
     }
@@ -34,6 +41,23 @@ public class KindlingServer {
             instance = new KindlingServer();
         }
         return instance;
+    }
+
+    /**
+     * Set the worker thread name generator. By default, this defaults to a
+     * anonymous class that generates a random UUID.
+     * 
+     * @param workerThreadNameGeneratorClass
+     * @throws KindlingException
+     */
+    public void setWorkerThreadNameGenerator(Class<WorkerThreadNameGenerator> workerThreadNameGeneratorClass)
+            throws KindlingException {
+        try {
+            workerThreadNameGenerator = workerThreadNameGeneratorClass.getDeclaredConstructor().newInstance();
+        } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
+                | NoSuchMethodException | SecurityException e) {
+            throw new KindlingException(e);
+        }
     }
 
     /**
@@ -99,7 +123,8 @@ public class KindlingServer {
      * @param sslSocket
      */
     private void dispatchWorker(SSLSocket sslSocket) {
-        Thread.startVirtualThread(() -> {
+        String workerThreadName = workerThreadNameGenerator.generate();
+        Thread.ofVirtual().name(workerThreadName).start(() -> {
             try (
                     InputStream inputStream = sslSocket.getInputStream();
                     InputStreamReader inputStreamReder = new InputStreamReader(inputStream);
@@ -113,7 +138,11 @@ public class KindlingServer {
                 HttpResponse response = null;
                 for (RequestHandler requestHandler : requestHandlers) {
                     if (requestHandler.accepts(httpRequest.getHttpMethod(), httpRequest.getResource())) {
-                        response = requestHandler.handle(httpRequest);
+                        try {
+                            response = requestHandler.handle(httpRequest);
+                        } catch (Exception e) {
+                            response = requestHandler.handleError(e);
+                        }
                     }
                 }
 
