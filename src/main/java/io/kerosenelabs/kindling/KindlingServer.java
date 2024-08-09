@@ -127,8 +127,8 @@ public class KindlingServer {
         Thread.ofVirtual().name(workerThreadName).start(() -> {
             try (
                     InputStream inputStream = sslSocket.getInputStream();
-                    InputStreamReader inputStreamReder = new InputStreamReader(inputStream);
-                    BufferedReader bufferedReader = new BufferedReader(inputStreamReder);
+                    InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
+                    BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
                     OutputStream outputStream = sslSocket.getOutputStream();) {
 
                 // parse our http request
@@ -137,7 +137,7 @@ public class KindlingServer {
                 // iterate over request handlers, finding one that can take this request
                 HttpResponse response = null;
                 for (RequestHandler requestHandler : requestHandlers) {
-                    if (requestHandler.accepts(httpRequest.getHttpMethod(), httpRequest.getResource())) {
+                    if (requestHandler.accepts(httpRequest)) {
                         try {
                             response = requestHandler.handle(httpRequest);
                         } catch (Exception e) {

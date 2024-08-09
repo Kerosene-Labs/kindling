@@ -19,8 +19,8 @@ public class Main {
              * Tell the server what type of request this handler can work with
              */
             @Override
-            public boolean accepts(HttpMethod httpMethod, String resource) throws KindlingException {
-                return httpMethod.equals(HttpMethod.GET) && resource.equals("/");
+            public boolean accepts(HttpRequest httpRequest) throws KindlingException {
+                return httpRequest.getHttpMethod().equals(HttpMethod.GET) && httpRequest.getResource().equals("/");
             }
 
             /**
