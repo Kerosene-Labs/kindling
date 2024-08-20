@@ -13,7 +13,7 @@ A programmable TLS HTTP/1.1 server written with no dependencies.
 
 ## Example
 
-Below is an example implementation of a Kindling Server with a simple request handler that response with a JSON object
+Below is an example implementation of a Kindling Server with a simple request handler that responds with a JSON object
 to a `GET` request on the `/` resource.
 
 ```java
