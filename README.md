@@ -2,63 +2,67 @@
 
 *The fuel that'll ignite your application.*
 
-A programmable TLS HTTP/1.1 server library written in pure Java with no dependencies.
+A programmable TLS HTTP/1.1 server written with no dependencies.
 
-## Usage
+## Key Features
+* SSL/TLS only (using `SSLServerSocket`)
+* No magic with visible control flow
+* Light weight
+* No Dependencies
+* Virtual Threads
+
+## Example
+
+Below is an example implementation of a Kindling Server with a simple request handler that response with a JSON object
+to a `GET` request on the `/` resource.
 
 ```java
-public static void startServer() throws KindlingException {
-    // get our KindlingServer singleton
-    KindlingServer server = KindlingServer.getInstance();
+public class Main {
+    public static void main(String[] args) throws KindlingException {
+        KindlingServer server = KindlingServer.getInstance();
+        server.installRequestHandler(new RequestHandler() {
+            /**
+             * Tell the server what type of request this handler can work with
+             */
+            @Override
+            public boolean accepts(HttpRequest httpRequest) throws KindlingException {
+                return httpRequest.getHttpMethod().equals(HttpMethod.GET) && httpRequest.getResource().equals("/");
+            }
 
-    // add a request handler
-    server.installRequestHandler(new RequestHandler() {
-        /**
-         * Tell the server what type of request this handler can work with
-         */
-        @Override
-        public boolean accepts(HttpMethod httpMethod, String resource) throws KindlingException {
-            return httpMethod.equals(HttpMethod.GET) && resource.equals("/");
-        }
+            /**
+             * Do your business logic here
+             */
+            @Override
+            public HttpResponse handle(HttpRequest httpRequest) throws KindlingException {
+                return new HttpResponse.Builder()
+                        .status(HttpStatus.OK)
+                        .headers(new HashMap<>() {
+                            {
+                                put("Content-Type", "application/json");
+                            }
+                        })
+                        .content("{\"key\": \"value\"}")
+                        .build();
+            }
+        });
 
-        /**
-         * Do your business logic here
-         */
-        @Override
-        public HttpResponse handle(HttpRequest httpRequest) throws KindlingException {
-            return new HttpResponse.Builder()
-                    .status(HttpStatus.OK)
-                    .headers(new HashMap<>() {
-                        {
-                            put("Content-Type", "text/html");
-                        }
-                    })
-                    .content("<h1>Hello from Kindling!</h1>")
-                    .build();
-        }
-    });
-
-    // serve our server
-    server.serve(8443, Path.of("mykeystore.p12"), "password");
+        // serve our server
+        server.serve(8443, Path.of("mykeystore.p12"), "password");
+    }
 }
 ```
 
-...and get the following response!
+Let's break down the components above.
 
-```
-> GET / HTTP/1.1
-> Host: localhost:8443
-> User-Agent: curl/7.88.1
-> Accept: */*
-> 
-* TLSv1.3 (IN), TLS handshake, Newsession Ticket (4):
-< HTTP/1.1 200 OK
-< Content-Type: text/html
-* no chunk, no close, no size. Assume close to signal end
-< 
-* TLSv1.3 (IN), TLS alert, user canceled (346):
-* TLSv1.3 (IN), TLS alert, close notify (256):
-* Closing connection 0
-* TLSv1.3 (OUT), TLS alert, close notify (256):
-<h1>Hello from Kindling!</h1>
-```
+* KindlingServer
+  * The singleton that contains the application context
+  * Manages the `SSLServerSocket` and the virtual thread that is assigned to each request
+* RequestHandler
+  * Accepts
+    * Called when a request is received
+    * Return a boolean telling the server if we can handle this request
+  * Handle
+    * If the `accepts()` method returns true, `handle()` is called
+    * Do your business logic here, returning an `HttpResponse`
+* Server Serve
+  * Start serving the `SSLServerSocket` on the provided port with the given `P12` keystore
