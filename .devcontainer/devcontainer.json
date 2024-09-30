@@ -16,6 +16,7 @@
             "type": "bind"
         }
     ],
+    "postCreateCommand": "sudo ln -s /workspaces/kindling/espresso /usr/local/bin/espresso",
     // "postCreateCommand": "sudo mkdir /etc/kindling && sudo ln -s /workspaces/kindling/configuration.json /etc/atc/configuration.json",
     "customizations": {
         "vscode": {
