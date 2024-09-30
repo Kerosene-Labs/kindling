@@ -1,4 +1,4 @@
-package io.kerosenelabs.kindling.handler;
+package com.kerosenelabs.kindling.handler;
 
 import org.junit.jupiter.api.BeforeEach;
 
