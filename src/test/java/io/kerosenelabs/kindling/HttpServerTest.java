@@ -1,5 +1,5 @@
-package io.kerosenelabs.kindling;
+package com.kerosenelabs.kindling;
 
 public class HttpServerTest {
-    
+
 }

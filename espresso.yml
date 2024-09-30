@@ -1,0 +1,13 @@
+name: Kindling
+version:
+  major: 0
+  minor: 2
+  patch: 0
+  hotfix: null
+basePackage: com.kerosenelabs.kindling
+toolchain:
+  path: /usr/lib/jvm/msopenjdk-current
+dependencies: []
+registries:
+  - name: espresso-registry
+    url: https://github.com/Kerosene-Labs/espresso-registry/archive/refs/heads/main.zip
