@@ -28,6 +28,7 @@ public class Main {
              */
             @Override
             public HttpResponse handle(HttpRequest httpRequest) throws KindlingException {
+                System.out.println(httpRequest.getQueryParmeters().toString());
                 return new HttpResponse.Builder()
                         .status(HttpStatus.OK)
                         .headers(new HashMap<>() {
@@ -41,6 +42,6 @@ public class Main {
         });
 
         // serve our server
-        server.serve(8443, Path.of("mykeystore.p12"), "password");
+        server.serve(8443, Path.of("keystore.p12"), "password");
     }
 }

@@ -31,6 +31,11 @@
                 "redhat.vscode-xml"
             ],
             "settings": {
+                "java.import.maven.enabled": false,
+                "java.import.gradle.enabled": false,
+                "java.project.referencedLibraries": [
+                    "dist/libs/*.jar"
+                ],
                 "files.autoSave": "afterDelay",
                 "files.autoSaveDelay": 250,
                 "editor.formatOnSave": true,

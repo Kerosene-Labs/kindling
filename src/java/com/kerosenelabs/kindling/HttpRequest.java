@@ -2,6 +2,8 @@ package com.kerosenelabs.kindling;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -18,9 +20,12 @@ import com.kerosenelabs.kindling.handler.RequestHandler;
 public class HttpRequest {
     private HttpMethod httpMethod;
     private String resource;
+    private String path;
+    private HashMap<String, String> queryParameters;
     private String protocolVersion;
     private HashMap<String, String> headers;
     private String content;
+    private String[] x;
 
     public HttpRequest(BufferedReader bufferedReader) throws KindlingException {
         List<String> messageHead;
@@ -35,6 +40,8 @@ public class HttpRequest {
         httpMethod = httpRequestLine.getHttpMethod();
         resource = httpRequestLine.getResource();
         protocolVersion = httpRequestLine.getProtocol();
+        path = resource.split("\\?")[0];
+        queryParameters = parseQueryParameters(resource);
 
         // do headers
         headers = parseHttpHeaders(messageHead);
@@ -50,8 +57,31 @@ public class HttpRequest {
         }
     }
 
+    /**
+     * Get the Resource (path and query parameters)
+     * 
+     * @return
+     */
     public String getResource() {
         return resource;
+    }
+
+    /**
+     * Get the path
+     * 
+     * @return
+     */
+    public String getPath() {
+        return path;
+    }
+
+    /**
+     * Get the query parameters
+     * 
+     * @return
+     */
+    public HashMap<String, String> getQueryParmeters() {
+        return queryParameters;
     }
 
     public HttpMethod getHttpMethod() {
@@ -119,6 +149,29 @@ public class HttpRequest {
         String requestLine = messageHead.get(0);
         String[] splitRequestLine = requestLine.split(" ");
         return new HttpRequestHead(HttpMethod.valueOf(splitRequestLine[0]), splitRequestLine[1], splitRequestLine[2]);
+    }
+
+    /**
+     * Parses the query parameters out of the given resource as a map.
+     * 
+     * @param resource Resource string (ex: /registry?q=lombok)
+     * @return
+     * @throws KindlingException
+     */
+    private static HashMap<String, String> parseQueryParameters(String resource) throws KindlingException {
+        HashMap<String, String> params = new HashMap<>();
+        String[] split = resource.split("&");
+        for (String pair : split) {
+            int idx = pair.indexOf("=");
+            try {
+                String key = URLDecoder.decode(pair.substring(0, idx), "UTF-8");
+                String value = URLDecoder.decode(pair.substring(idx + 1), "UTF-8");
+                params.put(key, value);
+            } catch (UnsupportedEncodingException e) {
+                throw new KindlingException(e);
+            }
+        }
+        return params;
     }
 
     /**

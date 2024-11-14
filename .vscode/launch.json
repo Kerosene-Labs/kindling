@@ -5,11 +5,14 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "preLaunchTask": "espresso build",
             "type": "java",
             "name": "Main",
             "request": "launch",
-            "mainClass": "io.kerosenelabs.kindling.Main",
-            "projectName": "kindling"
+            "mainClass": "com.kerosenelabs.kindling.Main",
+            "classPaths": [
+                "${workspaceFolder}/dist/dist.jar"
+            ]
         }
     ]
 }
