@@ -3,3 +3,5 @@ maven
 .m2/
 .maven/
 *.p12
+build
+dist
