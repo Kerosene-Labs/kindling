@@ -25,7 +25,6 @@ public class HttpRequest {
     private String protocolVersion;
     private HashMap<String, String> headers;
     private String content;
-    private String[] x;
 
     public HttpRequest(BufferedReader bufferedReader) throws KindlingException {
         List<String> messageHead;
@@ -160,13 +159,25 @@ public class HttpRequest {
      */
     private static HashMap<String, String> parseQueryParameters(String resource) throws KindlingException {
         HashMap<String, String> params = new HashMap<>();
-        String[] split = resource.split("&");
-        for (String pair : split) {
-            int idx = pair.indexOf("=");
+
+        // split our resource, ensure we were given query params
+        String[] splitResource = resource.split("\\?");
+        if (splitResource.length == 1) {
+            return params;
+        } else if (splitResource.length > 2) {
+            throw new KindlingException("Malformed query parameters, multiple '?' separators");
+        }
+
+        // split again, this time by param separators
+        String[] separatedParams = splitResource[1].split("\\&");
+
+        // iterate over the split params, this time splitting by key/value pair and
+        // decoding the keys and values
+        for (String keyValuePair : separatedParams) {
+            String[] splitKeyValuePair = keyValuePair.split("\\=");
             try {
-                String key = URLDecoder.decode(pair.substring(0, idx), "UTF-8");
-                String value = URLDecoder.decode(pair.substring(idx + 1), "UTF-8");
-                params.put(key, value);
+                params.put(URLDecoder.decode(splitKeyValuePair[0], "UTF8"),
+                        URLDecoder.decode(splitKeyValuePair[1], "UTF8"));
             } catch (UnsupportedEncodingException e) {
                 throw new KindlingException(e);
             }

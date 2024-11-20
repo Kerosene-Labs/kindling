@@ -3,20 +3,35 @@ package com.kerosenelabs.kindling;
 import java.util.HashMap;
 
 import com.kerosenelabs.kindling.constant.HttpStatus;
+import com.kerosenelabs.kindling.constant.MimeType;
+import com.kerosenelabs.kindling.exception.KindlingException;
 
 public class HttpResponse {
     private HttpStatus httpStatus;
     private HashMap<String, String> headers = new HashMap<>();
     private String content;
+    private MimeType contentType;
 
-    HttpResponse(Builder builder) {
+    HttpResponse(Builder builder) throws KindlingException {
         this.httpStatus = builder.httpStatus;
         this.headers = builder.headers;
         this.content = builder.content;
+        this.contentType = builder.contentType;
 
         // implicitly calculate Content-Length
         if (content != null) {
             headers.put("Content-Length", Integer.toString(content.getBytes().length));
+        }
+
+        // check if the content-type header has already been set
+        for (String key : headers.keySet()) {
+            if (key.toLowerCase().equals("content-type") && this.contentType != null) {
+                throw new KindlingException(
+                        "Programming error, you're trying to set the 'Content-Type' header manually AND set it through 'HttpResponse.Builder'");
+            }
+        }
+        if (contentType == null) {
+            throw new KindlingException("Programming error, you must specify a Content");
         }
     }
 
@@ -44,6 +59,7 @@ public class HttpResponse {
         private HttpStatus httpStatus;
         private HashMap<String, String> headers = new HashMap<>();
         private String content;
+        private MimeType contentType;
 
         public Builder status(HttpStatus httpStatus) {
             this.httpStatus = httpStatus;
@@ -60,7 +76,12 @@ public class HttpResponse {
             return this;
         }
 
-        public HttpResponse build() {
+        public Builder contentType(MimeType contentType) {
+            this.contentType = contentType;
+            return this;
+        }
+
+        public HttpResponse build() throws KindlingException {
             return new HttpResponse(this);
         }
     }
