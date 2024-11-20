@@ -25,7 +25,6 @@ public class HttpRequest {
     private String protocolVersion;
     private HashMap<String, String> headers;
     private String content;
-    private String[] x;
 
     public HttpRequest(BufferedReader bufferedReader) throws KindlingException {
         List<String> messageHead;
@@ -183,7 +182,6 @@ public class HttpRequest {
                 throw new KindlingException(e);
             }
         }
-        System.out.println("params: " + params.toString());
         return params;
     }
 

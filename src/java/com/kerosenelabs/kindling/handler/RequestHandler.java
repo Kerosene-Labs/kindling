@@ -2,7 +2,6 @@ package com.kerosenelabs.kindling.handler;
 
 import com.kerosenelabs.kindling.HttpRequest;
 import com.kerosenelabs.kindling.HttpResponse;
-import com.kerosenelabs.kindling.constant.HttpMethod;
 import com.kerosenelabs.kindling.constant.HttpStatus;
 import com.kerosenelabs.kindling.exception.KindlingException;
 
@@ -18,8 +17,10 @@ public abstract class RequestHandler {
      * 
      * @param t the Throwable that occurred
      * @return
+     * @throws KindlingException
      */
-    public HttpResponse handleError(Throwable t) {
+    public HttpResponse handleError(Throwable t) throws KindlingException {
+        t.printStackTrace();
         return new HttpResponse.Builder()
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .content("Internal Server Error")

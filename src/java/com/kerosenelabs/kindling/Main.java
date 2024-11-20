@@ -1,10 +1,10 @@
 package com.kerosenelabs.kindling;
 
 import java.nio.file.Path;
-import java.util.HashMap;
 
 import com.kerosenelabs.kindling.constant.HttpMethod;
 import com.kerosenelabs.kindling.constant.HttpStatus;
+import com.kerosenelabs.kindling.constant.MimeType;
 import com.kerosenelabs.kindling.exception.KindlingException;
 import com.kerosenelabs.kindling.handler.RequestHandler;
 
@@ -28,14 +28,9 @@ public class Main {
              */
             @Override
             public HttpResponse handle(HttpRequest httpRequest) throws KindlingException {
-                System.out.println(httpRequest.getQueryParmeters().toString());
                 return new HttpResponse.Builder()
                         .status(HttpStatus.OK)
-                        .headers(new HashMap<>() {
-                            {
-                                put("Content-Type", "application/json");
-                            }
-                        })
+                        .contentType(MimeType.APPLICATION_JSON)
                         .content("{\"key\": \"value\"}")
                         .build();
             }
