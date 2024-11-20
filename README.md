@@ -5,6 +5,7 @@
 A programmable TLS HTTP/1.1 server written with no dependencies.
 
 ## Key Features
+
 * SSL/TLS only (using `SSLServerSocket`)
 * No magic with visible control flow
 * Light weight
@@ -19,7 +20,10 @@ to a `GET` request on the `/` resource.
 ```java
 public class Main {
     public static void main(String[] args) throws KindlingException {
+
         KindlingServer server = KindlingServer.getInstance();
+
+        // test request handler
         server.installRequestHandler(new RequestHandler() {
             /**
              * Tell the server what type of request this handler can work with
@@ -36,20 +40,17 @@ public class Main {
             public HttpResponse handle(HttpRequest httpRequest) throws KindlingException {
                 return new HttpResponse.Builder()
                         .status(HttpStatus.OK)
-                        .headers(new HashMap<>() {
-                            {
-                                put("Content-Type", "application/json");
-                            }
-                        })
+                        .contentType(MimeType.APPLICATION_JSON)
                         .content("{\"key\": \"value\"}")
                         .build();
             }
         });
 
         // serve our server
-        server.serve(8443, Path.of("mykeystore.p12"), "password");
+        server.serve(8443, Path.of("keystore.p12"), "password");
     }
 }
+
 ```
 
 Let's break down the components above.
