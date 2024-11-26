@@ -34,6 +34,13 @@ public class Main {
                         .content("{\"key\": \"value\"}")
                         .build();
             }
+
+            @Override
+            public HttpResponse handleError(Throwable t) throws KindlingException {
+                return new HttpResponse.Builder().status(HttpStatus.INTERNAL_SERVER_ERROR)
+                        .content(t.getStackTrace().toString())
+                        .build();
+            }
         });
 
         // serve our server

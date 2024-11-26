@@ -117,6 +117,12 @@ public class KindlingServer {
         }
     }
 
+    private HttpResponse defaultInternalServerErrorResponse(Throwable t) {
+        t.printStackTrace();
+        return new HttpResponse.Builder().status(HttpStatus.INTERNAL_SERVER_ERROR).content("Internal Server Error")
+                .build();
+    }
+
     /**
      * Dispatch a worker to handle a particular request
      * 
@@ -130,20 +136,26 @@ public class KindlingServer {
                     InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
                     BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
                     OutputStream outputStream = sslSocket.getOutputStream();) {
+                HttpResponse response = null;
 
                 // parse our http request
-                HttpRequest httpRequest = new HttpRequest(bufferedReader);
+                try {
+                    HttpRequest httpRequest = new HttpRequest(bufferedReader);
 
-                // iterate over request handlers, finding one that can take this request
-                HttpResponse response = null;
-                for (RequestHandler requestHandler : requestHandlers) {
-                    if (requestHandler.accepts(httpRequest)) {
-                        try {
-                            response = requestHandler.handle(httpRequest);
-                        } catch (Exception e) {
-                            response = requestHandler.handleError(e);
+                    // iterate over request handlers, finding one that can take this request.
+                    // note: we catch all exceptions here during the handle() so that way we can
+                    // pass the error handling to the request handler.
+                    for (RequestHandler requestHandler : requestHandlers) {
+                        if (requestHandler.accepts(httpRequest)) {
+                            try {
+                                response = requestHandler.handle(httpRequest);
+                            } catch (Exception e) {
+                                response = requestHandler.handleError(e);
+                            }
                         }
                     }
+                } catch (KindlingException e) {
+                    response = defaultInternalServerErrorResponse(e);
                 }
 
                 // if there were no request handlers
@@ -154,7 +166,7 @@ public class KindlingServer {
                 // write our response
                 outputStream.write(response.toString().getBytes());
 
-            } catch (IOException | KindlingException e) {
+            } catch (IOException e) {
                 throw new RuntimeException(e);
             }
         });
