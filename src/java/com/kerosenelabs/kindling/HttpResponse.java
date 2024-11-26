@@ -12,7 +12,7 @@ public class HttpResponse {
     private String content;
     private MimeType contentType;
 
-    HttpResponse(Builder builder) throws KindlingException {
+    HttpResponse(Builder builder) {
         this.httpStatus = builder.httpStatus;
         this.headers = builder.headers;
         this.content = builder.content;
@@ -26,7 +26,7 @@ public class HttpResponse {
         // check if the content-type header has already been set
         for (String key : headers.keySet()) {
             if (key.toLowerCase().equals("content-type") && this.contentType != null) {
-                throw new KindlingException(
+                throw new RuntimeException(
                         "Programming error, you're trying to set the 'Content-Type' header manually AND set it through 'HttpResponse.Builder'");
             }
         }
@@ -82,7 +82,7 @@ public class HttpResponse {
             return this;
         }
 
-        public HttpResponse build() throws KindlingException {
+        public HttpResponse build() {
             return new HttpResponse(this);
         }
     }
