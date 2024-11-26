@@ -33,6 +33,7 @@ public class HttpResponse {
         if (contentType == null) {
             throw new KindlingException("Programming error, you must specify a Content");
         }
+        headers.put("Content-Type", contentType.getMimeType());
     }
 
     public String toString() {
