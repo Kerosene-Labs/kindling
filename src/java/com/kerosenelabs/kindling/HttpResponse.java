@@ -31,7 +31,7 @@ public class HttpResponse {
             }
         }
         if (contentType == null) {
-            throw new KindlingException("Programming error, you must specify a Content");
+            contentType = MimeType.TEXT_PLAIN;
         }
         headers.put("Content-Type", contentType.getMimeType());
     }
