@@ -15,6 +15,11 @@
             "source": "${localEnv:HOME}/.gitconfig",
             "target": "/home/vscode/.gitconfig",
             "type": "bind"
+        },
+        {
+            "source": "${localEnv:HOME}/.ssh",
+            "target": "/home/vscode/.ssh",
+            "type": "bind"
         }
     ],
     "runArgs": [
