@@ -9,6 +9,7 @@
         },
         "ghcr.io/devcontainers/features/docker-in-docker": {}
     },
+    "remoteUser": "vscode",
     "mounts": [
         {
             "source": "${localEnv:HOME}/.gitconfig",
@@ -16,6 +17,14 @@
             "type": "bind"
         }
     ],
+    "runArgs": [
+        "--userns=keep-id:uid=1000,gid=1000"
+    ],
+    "containerUser": "vscode",
+    "updateRemoteUserUID": true,
+    "containerEnv": {
+        "HOME": "/home/vscode"
+    },
     "postCreateCommand": "sudo ln -s /workspaces/kindling/espresso /usr/local/bin/espresso",
     // "postCreateCommand": "sudo mkdir /etc/kindling && sudo ln -s /workspaces/kindling/configuration.json /etc/atc/configuration.json",
     "customizations": {
